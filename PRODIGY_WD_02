@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stopwatch</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        #stopwatch {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        #controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        #lapTimes {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="stopwatch">00:00:00</div>
+    <div id="controls">
+        <button onclick="startStopwatch()">Start</button>
+        <button onclick="pauseStopwatch()">Pause</button>
+        <button onclick="resetStopwatch()">Reset</button>
+        <button onclick="recordLapTime()">Lap</button>
+    </div>
+    <div id="lapTimes"></div>
+
+    <script>
+        let timer; // Variable to store the setInterval reference
+        let startTime; // Variable to store the start time
+        let lapTimes = []; // Array to store lap times
+
+        function startStopwatch() {
+            startTime = new Date().getTime();
+
+            timer = setInterval(function() {
+                const currentTime = new Date().getTime();
+                const elapsedTime = currentTime - startTime;
+                displayTime(elapsedTime);
+            }, 1000);
+        }
+
+        function pauseStopwatch() {
+            clearInterval(timer);
+        }
+
+        function resetStopwatch() {
+            clearInterval(timer);
+            lapTimes = [];
+            displayTime(0);
+            displayLapTimes();
+        }
+
+        function recordLapTime() {
+            const currentTime = new Date().getTime();
+            const elapsedTime = currentTime - startTime;
+            lapTimes.push(formatTime(elapsedTime));
+            displayLapTimes();
+        }
+
+        function displayTime(elapsedTime) {
+            const formattedTime = formatTime(elapsedTime);
+            document.getElementById('stopwatch').innerText = formattedTime;
+        }
+
+        function displayLapTimes() {
+            const lapTimesElement = document.getElementById('lapTimes');
+            lapTimesElement.innerHTML = "<strong>Lap Times:</strong><br>" + lapTimes.join('<br>');
+        }
+
+        function formatTime(elapsedTime) {
+            const totalSeconds = Math.floor(elapsedTime / 1000);
+            const minutes = Math.floor(totalSeconds / 60);
+            const seconds = totalSeconds % 60;
+            const milliseconds = Math.floor((elapsedTime % 1000) / 10);
+
+            return ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}:${String(milliseconds).padStart(2, '0')};
+        }
+    </script>
+</body>
+</html>
